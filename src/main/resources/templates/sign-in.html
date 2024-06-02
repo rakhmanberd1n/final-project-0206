@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="layout/main.html">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign In</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" th:if="${param.success != null}" style="width: 40%;margin: auto auto">
+        User created successfully!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" th:if="${param.error != null}" style="width: 40%;margin: auto auto">
+        Login or password is not correct!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" th:if="${param.updated != null}" style="width: 40%;margin: auto auto">
+        Your password updated successfully
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="margin: auto auto">Sign in</h5>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{'/auth'}" method="post">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="user_email" placeholder="Enter your email" required>
+                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" name="user_password" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sign in</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div style="margin: auto auto;display: flex;justify-content: center">
+        <p style="margin-right: 6px">Still have no account? </p><a th:href="@{'/register'}" th:text="${' Click here'}" style="text-decoration: none"></a>
+    </div>
+    <div style="margin: auto auto;display: flex;justify-content: center">
+        <p style="margin-right: 6px">Forgot your password? </p><a th:href="@{'/forgot?mail'}" th:text="${' Click here'}" style="text-decoration: none"></a>
+    </div>
+    <script type="text/javascript">
+        $(".alert").delay(2500).fadeOut(1000, function() {
+            $(this).alert('close');
+        });
+    </script>
+</div>
+</body>
+</html>

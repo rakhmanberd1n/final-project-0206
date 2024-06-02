@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="layout/main.html">
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+  <!-- Include CSS and JS if necessary -->
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" th:if="${param.exist != null}" style="width: 40%; margin: auto;">
+    User with this email already exists!
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" th:if="${param.typo != null}" style="width: 40%; margin: auto;">
+    Entered passwords are not matching!
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" style="margin: auto;">Register</h5>
+      </div>
+      <div class="modal-body">
+        <form th:action="@{/register}" method="post">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" name="email" placeholder="Enter your email" required>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Enter your password" required>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword2">Retype Password</label>
+            <input type="password" class="form-control" id="exampleInputPassword2" name="rePassword" placeholder="Retype your password" required>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputName">Name</label>
+            <input type="text" class="form-control" id="exampleInputName" name="name" placeholder="Enter your name" required>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputName2">Surname</label>
+            <input type="text" class="form-control" id="exampleInputName2" name="surname" placeholder="Enter your surname" required>
+            <input type="hidden" name="picture" value="anonymous.jpeg">
+          </div>
+          <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div style="margin: auto; display: flex; justify-content: center;">
+    <p style="margin-right: 6px;">Already have an account? </p><a th:href="@{/sign-in}" style="text-decoration: none;">Click here</a>
+  </div>
+  <script type="text/javascript">
+    $(".alert").delay(2500).fadeOut(1000, function() {
+      $(this).alert('close');
+    });
+  </script>
+</div>
+</body>
+</html>

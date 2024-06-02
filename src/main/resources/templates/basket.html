@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="layout/main.html" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<div layout:fragment="content">
+    <style>
+        .title{
+            margin-bottom: 5vh;
+        }
+        .card{
+            margin: auto;
+            max-width: 950px;
+            width: 90%;
+            box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            border-radius: 1rem;
+            border: transparent;
+        }
+        .cart{
+            background-color: #fff;
+            padding: 4vh 5vh;
+            border-bottom-left-radius: 1rem;
+            border-top-left-radius: 1rem;
+        }
+        .summary{
+            background-color: #ddd;
+            border-top-right-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+            padding: 4vh;
+            color: rgb(65, 65, 65);
+        }
+        .summary .col-2{
+            padding: 0;
+        }
+        .summary .col-10
+        {
+            padding: 0;
+        }.row{
+             margin: 0;
+         }
+        .title b{
+            font-size: 1.5rem;
+        }
+        .main{
+            margin: 0;
+            padding: 2vh 0;
+            width: 100%;
+        }
+        .col-2, .col{
+            padding: 0 1vh;
+        }
+        .close{
+            margin-left: auto;
+            font-size: 0.7rem;
+        }
+        .back-to-shop{
+            margin-top: 4.5rem;
+        }
+        hr{
+            margin-top: 1.25rem;
+        }
+        select
+        {
+            border: 1px solid rgba(0, 0, 0, 0.137);
+            padding: 1.5vh 1vh;
+            margin-bottom: 4vh;
+            outline: none;
+            width: 100%;
+            background-color: rgb(247, 247, 247);
+        }
+        a{
+            color: black;
+        }
+        a{
+            padding: 0 1vh;
+        }
+
+        a:hover{
+            color: black;
+            text-decoration: none;
+        }
+    </style>
+    <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" th:if="${param.success != null}" style="width: 40%;margin: auto auto">
+        Order created successfully!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <h1 th:if="${ basket.size() == 0}" style="text-align: center">Your Shopping Cart is empty</h1>
+    <div class="card">
+        <div class="row">
+            <div class="col-md-8 cart">
+                <div class="title">
+                    <div class="row">
+                        <div class="col"><h4><b>Shopping Cart</b></h4></div>
+                        <div class="col align-self-center text-right text-muted" th:text="${basket.size() + ' items'}"></div>
+                    </div>
+                </div>
+                <div class="row border-top border-bottom" th:each="basketItem : ${ basket }">
+                    <div class="row main align-items-center">
+                        <div class="col-2"><img class="img-fluid" th:src="${'/getPicture/'+basketItem.product.picture}"></div>
+                        <div class="col">
+                            <div class="row text-muted" th:text="${basketItem.product.category.name}"></div>
+                            <div class="row" th:text="${basketItem.product.name}"></div>
+                        </div>
+                        <div class="col">
+                            <a th:href="${'users/deleteFromBasket/'+basket.indexOf(basketItem)}" >&#x1F5D1;</a>
+                            <a th:href="${'users/removeFromBasket/'+basket.indexOf(basketItem)}">-</a>
+                            <a class="border" th:text="${basketItem.quantity}"></a>
+                            <a th:href="${'users/addToBasket/'+basket.indexOf(basketItem)}">+</a>
+                        </div>
+                        <div class="col" th:text="${(basketItem.quantity*basketItem.product.price)+' $'}"></div>
+                    </div>
+                </div>
+                <div class="back-to-shop"><a th:href="${'/'}">&leftarrow;</a><span class="text-muted">Back to shop</span></div>
+            </div>
+            <div class="col-md-4 summary">
+                <div><h5><b>Summary</b></h5></div>
+                <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                    <div class="col">TOTAL PRICE</div>
+                    <div class="col text-right" th:text="${total + ' $'}"></div>
+                </div>
+                <form th:action="${'/orders/create'}" method="post">
+                    <button class="btn btn-lg btn-primary" th:if="${basket.size()!=0}">ORDER</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(".alert").delay(2500).fadeOut(1000, function() {
+            $(this).alert('close');
+        });
+    </script>
+</div>
+
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="layout/main.html">
+<div layout:fragment="content">
+  <button th:class="${'btn btn-success btn-lg mt-4 ml-4'}" th:text="${'Add Product'}" data-toggle="modal" th:data-target="${'#addProduct'}"></button>
+  <div class="modal fade" th:id="${'addProduct'}" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ModalLabel">Adding new product</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="name" class="col-form-label">Name:</label>
+            <input type="text" class="form-control" id="name" required>
+          </div>
+          <div class="form-group">
+            <label for="description" class="col-form-label">Description:</label>
+            <textarea class="form-control" id="description" cols="8" rows="5" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="price" class="col-form-label">Price:</label>
+            <input type="number" class="form-control" id="price" min="0" required>
+          </div>
+          <div class="form-group">
+            <label for="category" class="col-form-label">Category:</label>
+            <select class="custom-select" id="category" required>
+              <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}">
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-dismiss="modal" data-target="sure">CLOSE</button>
+          <button class="btn btn-primary" onclick="addProduct()">SUBMIT</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table th:class="${'table mt-3'}" th:style="${'width : 97%;margin:auto auto'}">
+    <thead class="thead-dark">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">NAME</th>
+      <th scope="col">QUANTITY</th>
+      <th scope="col">IMAGE</th>
+      <th scope="col">DETAILS</th>
+      <th scope="col">FEATURES</th>
+      <th scope="col">PICTURE</th>
+      <th scope="col">DELETE</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product : ${products}">
+      <td><h4 th:text="${product.id}"></h4></td>
+      <td><h4 th:text="${product.name}"></h4></td>
+      <td><h4 th:text="${product.quantity}"></h4></td>
+      <td><img style="border: 1px solid black" th:src="${'/getPicture/'+product.picture}" alt="picture" width="70" height="70"></td>
+      <td><button th:class="${'btn btn-primary'}" th:text="${'Details'}" data-toggle="modal" th:data-target="${'#exampleModal'+product.id}"></button></td>
+      <div class="modal fade" th:id="${'exampleModal'+product.id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modifying product</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="name" class="col-form-label">Name:</label>
+                <input type="text" class="form-control" th:id="${'new_name'+product.id}" required th:value="${product.name}">
+              </div>
+              <div class="form-group">
+                <label for="description" class="col-form-label">Description:</label>
+                <textarea class="form-control" th:id="${'new_description'+product.id}" cols="8" rows="5" required th:text="${product.description}"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="price" class="col-form-label">Price:</label>
+                <input type="number" class="form-control" th:id="${'new_price'+product.id}" min="0" required th:value="${product.price}">
+              </div>
+              <div class="form-group">
+                <label for="price" class="col-form-label">Quantity:</label>
+                <input type="number" class="form-control" th:id="${'new_quantity'+product.id}" min="0" required th:value="${product.quantity}">
+              </div>
+              <div class="form-group">
+                <label for="category" class="col-form-label">Category:</label>
+                <select class="custom-select" th:id="${'new_category'+product.id}" required>
+                  <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${category.id==product.category.id}">
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" data-dismiss="modal" data-target="sure">CLOSE</button>
+              <button class="btn btn-primary" th:onclick="'updateProduct(\''+${product.id}+'\')'">SUBMIT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <td><button th:class="${'btn btn-primary'}" th:text="${'Features'}" data-toggle="modal" th:data-target="${'#exampleModal3'+product.id}"></button></td>
+      <div class="modal fade" th:id="${'exampleModal3'+product.id}" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel2">Modifying product features</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div style="display: inline-flex" th:each="feature : ${product.features}">
+                <form th:action="${'/removeFeature/'+product.id}" th:method="${'POST'}">
+                  <input type="hidden" th:value="${feature.id}" name="feature">
+                  <button style="margin-right: 10px" th:class="${'btn btn-danger btn-sm'}"  th:text="${feature.name+'  x'}"></button>
+                </form>
+              </div>
+            </div>
+            <div class="modal-body">
+              <div style="display: inline-flex" th:each="feature : ${features}">
+                <form th:action="${'/addFeature/'+product.id}" th:method="${'POST'}">
+                  <input type="hidden" th:value="${feature.id}" name="feature">
+                  <button style="margin-right: 10px" th:class="${'btn btn-success btn-sm'}"  th:text="${'+ '+feature.name}"></button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <td><button class="btn btn-info" th:text="${'Add picture'}" th:data-target="${'#picture'+product.id}" data-toggle="modal"></button></td>
+      <div class="modal fade" th:id="${'picture'+product.id}" tabindex="-1" aria-labelledby="exampleModalLabel23" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel23">Modifying product</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="input-group mb-3">
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" th:onchange="'displayImage(this,\''+${product.id}+'\')'" th:id="${'image'+product.id}" required accept="image/*">
+                  <label class="custom-file-label" th:for="${'image'+product.id}" aria-describedby="inputGroupFileAddon02">Choose file</label>
+                </div>
+              </div>
+            </div>
+            <div th:id="${'imagePreview'+product.id}" class="ml-3 mb-3"></div>
+            <div class="modal-footer">
+              <button class="btn btn-danger" th:onclick="'resetPhoto(\''+${product.id}+'\')'">DELETE</button>
+              <button class="btn btn-primary" th:onclick="'setPhoto(\''+${product.id}+'\')'">SUBMIT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <td><button th:class="${'btn btn-danger'}" th:text="${'Delete'}" data-toggle="modal" th:data-target="${'#delete'+product.id}"></button></td>
+      <div class="modal fade" th:id="${'delete'+product.id}" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel1" th:text="${'You are deleting '+product.name+' product'}"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <h4>ARE YOU SURE?</h4>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" data-dismiss="modal">CLOSE</button>
+              <button class="btn btn-danger" th:onclick="'deleteProduct(\''+${product.id}+'\')'">DELETE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </tr>
+    </tbody>
+  </table>
+  <script type="text/javascript">
+    function addProduct()
+    {
+      let name = document.getElementById('name').value
+      let description = document.getElementById('description').value
+      let price = document.getElementById('price').value
+      let cat_id = document.getElementById('category').value
+      let picture = 'noimage.jpeg'
+      let req = new XMLHttpRequest()
+      req.open('GET','/categories/find/'+cat_id)
+      req.send()
+      req.onload = function ()
+      {
+        let category = JSON.parse(req.responseText)
+        let product =
+                {
+                  "name" : name,
+                  "description" : description,
+                  "price" : price,
+                  "picture" : picture,
+                  "category" : category
+                }
+        $.ajax({
+          type: 'POST',
+          url: '/products/add',
+          contentType: 'application/json',
+          data: JSON.stringify(product),
+          success: function(response)
+          {
+            window.location.replace(response);
+          }
+        })
+      }
+    }
+    function deleteProduct(id)
+    {
+      $.ajax({
+        type: 'DELETE',
+        url: '/products/delete/'+id,
+        success: function (response)
+        {
+          window.location.replace(response);
+        }
+      })
+    }
+
+    function updateProduct(id)
+    {
+      let name = document.getElementById('new_name'+id).value
+      let description = document.getElementById('new_description'+id).value
+      let price = document.getElementById('new_price'+id).value
+      let quantity = document.getElementById('new_quantity'+id).value
+      let cat_id = document.getElementById('new_category'+id).value
+
+      let req = new XMLHttpRequest()
+      req.open('GET','/products/find/'+id)
+      req.send()
+      req.onload = function ()
+      {
+        let product = JSON.parse(req.responseText)
+        let image = product.picture
+        let reg = new XMLHttpRequest()
+        reg.open('GET','/categories/find/'+cat_id)
+        reg.send()
+        reg.onload = function ()
+        {
+          let category = JSON.parse(reg.responseText)
+          let updated_product =
+                  {
+                    "id" : id,
+                    "name" : name,
+                    "description" : description,
+                    "price" : price,
+                    "picture" : image,
+                    "category" : category,
+                    "quantity" : quantity
+                  }
+          $.ajax({
+            type: 'PUT',
+            url: '/products/update',
+            contentType: 'application/json',
+            data: JSON.stringify(updated_product),
+            success: function (response)
+            {
+              window.location.replace(response);
+            }
+          })
+        }
+      }
+    }
+    function setPhoto(id)
+    {
+      var fileInput = document.getElementById('image'+id);
+      var file = fileInput.files[0];
+      var formData = new FormData();
+      formData.append("file", file);
+      $.ajax({
+        type: 'PUT',
+        url: '/products/add_photo/'+id,
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response)
+        {
+          window.location.replace(response);
+        }
+      })
+    }
+
+    function displayImage(input,id)
+    {
+      const imagePreview = document.getElementById('imagePreview'+id);
+      imagePreview.innerHTML = ''; // Clear existing content
+
+      const files = input.files;
+
+      if (files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          // Check for valid image data
+          if (!e.target.result.startsWith('data:image/')) {
+            console.error('Invalid image format:', e.target.result);
+            return;
+          }
+
+          const previewImage = document.createElement('img');
+          previewImage.src = e.target.result; // Object URL of the image
+          previewImage.style.maxWidth = '200px'; // Set fixed width
+          previewImage.style.maxHeight = '200px'; // Set fixed height
+          imagePreview.appendChild(previewImage);
+
+          // Optionally check image aspect ratio and adjust styles
+          if (previewImage.naturalWidth > previewImage.naturalHeight) {
+            previewImage.style.height = 'auto';
+            previewImage.style.maxWidth = '100%'; // Adjust max width if needed
+          } else {
+            previewImage.style.width = 'auto';
+            previewImage.style.maxHeight = '100%'; // Adjust max height if needed
+          }
+        };
+
+        // Added try-catch for file reading errors
+        try {
+          reader.readAsDataURL(files[0]);
+        } catch (error) {
+          console.error('Error reading file:', error);
+        }
+      }
+    }
+
+    function resetPhoto(id)
+    {
+      $.ajax({
+        type: 'PUT',
+        url: '/products/reset_photo/'+id,
+        success: function (response)
+        {
+          window.location.replace(response);
+        }
+      })
+    }
+  </script>
+</div>
+</html>

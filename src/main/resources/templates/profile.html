@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="layout/main.html" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<div layout:fragment="content">
+    <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" th:if="${param.success != null}" style="width: 40%;margin: auto auto">
+        Password updated successfully!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" th:if="${param.notright != null}" style="width: 40%;margin: auto auto">
+        You current password is not correct!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" th:if="${param.same != null}" style="width: 40%;margin: auto auto">
+        Your new password is you current password!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" th:if="${param.notmatch != null}" style="width: 40%;margin: auto auto">
+        Entered passwords are not matching!!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <h1 style="text-align: center" th:text="${'Hello, '+ #authentication.principal.name +'  this is your profile page'}"></h1>
+    <div class="card ml-5 mt-4" style="width: 20rem">
+        <div class="card-header" style="font-size: 30px">Actions to perform</div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <button th:class="${'btn btn-primary'}" th:text="${'Update Password'}" data-toggle="modal" data-target="#changePassword"></button>
+                <div class="modal fade" id="changePassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Password change</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form th:action="@{'/updatePassword'}" method="post">
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Your current Password</label>
+                                        <input type="password" class="form-control" id="exampleInputPassword1" name="currentPassword" placeholder="Enter your current password" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword2">New Password</label>
+                                        <input type="password" class="form-control" id="exampleInputPassword2" name="newPassword" placeholder="Enter new password" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputName">Retype New Password</label>
+                                        <input type="password" class="form-control" id="exampleInputName" name="renewPassword" placeholder="Retype new password" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <button th:class="${'btn btn-primary'}" th:text="${'Update Details'}" data-toggle="modal" data-target="#changeDetails"></button>
+                <div class="modal fade" id="changeDetails" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel2">Information change</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form th:action="@{'/updateDetails'}" method="post">
+                                    <div class="form-group">
+                                        <label for="name">New name</label>
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter new name" required th:value="${ #authentication.principal.name }">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="surname">New surname</label>
+                                        <input type="text" class="form-control" id="surname" name="surname" placeholder="Enter new surname" required th:value="${ #authentication.principal.surname }">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <button th:class="${'btn btn-primary'}" th:text="${'Set Image'}" data-toggle="modal" data-target="#setImage"></button>
+                <div class="modal fade" id="setImage" tabindex="-1" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel3">Setting Image</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form th:action="@{'/setImage'}" method="post" enctype="multipart/form-data">
+                                <div class="modal-body">
+                                    <div class="custom-file">
+                                        <label for="imageInput" class="custom-file-label">Choose an Image:</label>
+                                        <input type="file" id="imageInput" onchange="displayImage(this)" required accept="image/*" name="file">
+                                    </div>
+                                </div>
+                                <div id="imagePreview" class="ml-3 mb-3"></div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Set</button>
+                                    <button class="btn btn-danger" onclick="resetImage()">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item" sec:authorize="!hasRole('ROLE_ADMIN')">
+                <button th:class="${'btn btn-danger'}" th:text="${'Delete Account'}" data-toggle="modal" data-target="#Delete"></button>
+                <div class="modal fade" id="Delete" tabindex="-1" aria-labelledby="exampleModalLabel4" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <form th:action="${'/deleteAccount'}" method="post">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel4">You want to delete your account</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="deletion" style="font-weight: bold" th:text="${'Please enter : DELETION '}"></label>
+                                        <input type="text" class="form-control" id="deletion" name="deletion" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal">CLOSE</button>
+                                    <button class="btn btn-danger">DELETE</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <script type="text/javascript">
+        $(".alert").delay(2500).fadeOut(1000, function()
+        {
+            $(this).alert('close');
+        });
+        function displayImage(input)
+        {
+            const imagePreview = document.getElementById('imagePreview');
+            imagePreview.innerHTML = ''; // Clear existing content
+
+            const files = input.files;
+
+            if (files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    // Check for valid image data
+                    if (!e.target.result.startsWith('data:image/')) {
+                        console.error('Invalid image format:', e.target.result);
+                        return;
+                    }
+
+                    const previewImage = document.createElement('img');
+                    previewImage.src = e.target.result; // Object URL of the image
+                    previewImage.style.maxWidth = '200px'; // Set fixed width
+                    previewImage.style.maxHeight = '200px'; // Set fixed height
+                    imagePreview.appendChild(previewImage);
+
+                    // Optionally check image aspect ratio and adjust styles
+                    if (previewImage.naturalWidth > previewImage.naturalHeight) {
+                        previewImage.style.height = 'auto';
+                        previewImage.style.maxWidth = '100%'; // Adjust max width if needed
+                    } else {
+                        previewImage.style.width = 'auto';
+                        previewImage.style.maxHeight = '100%'; // Adjust max height if needed
+                    }
+                };
+
+                // Added try-catch for file reading errors
+                try {
+                    reader.readAsDataURL(files[0]);
+                } catch (error) {
+                    console.error('Error reading file:', error);
+                }
+            }
+        }
+        function resetImage()
+        {
+            fetch('/resetImage', {
+                method: 'POST',
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Redirect to profile page
+                        window.location.href = '/profile';
+                    }
+                })
+        }
+    </script>
+</div>
+</html>

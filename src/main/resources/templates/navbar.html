@@ -1,0 +1,33 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+  <img class="mr-2" th:src="${'/getPicture/shop.png'}" alt="no_image" width="50" height="50" style="border-radius: 25px">
+  <a class="navbar-brand" th:href="${'/'}"><b>E-Shop</b></a>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" th:href="${'/'}" th:text="${'Home'}"></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" th:href="${'/categories'}" th:text="${'Categories'}"></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" th:href="${'/admin'}" th:text="${'Admin'}" sec:authorize="hasRole('ROLE_ADMIN')"></a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0 w-50" th:action="${'/search'}" method="post">
+      <input class="form-control sm-5 w-50 mr-2"  placeholder="Search" name="pattern" minlength="1" required>
+      <button type="submit" class="btn btn-success">Search</button>
+    </form>
+    <a class="btn btn-warning mr-4" th:href="${ '/sign-in' }" th:text="${ 'Sign-in' }" th:if="${#authorization.expression('!isAuthenticated()')}"></a>
+    <div class="dropdown mr-3" th:if="${#authorization.expression('isAuthenticated()')}">
+      <img style="border-radius: 50px;object-fit: cover" th:src="${ '/getPicture/' + #authentication.principal.picture}" alt="picture" width="50" height="50">
+      <button class="btn btn-warning dropdown-toggle ml-2" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="${ #authentication.principal.name }">
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" th:href="${ '/profile' }" th:text="${ 'Profile page' }"></a>
+        <a class="dropdown-item" th:href="${ '/basket' }" th:text="${ 'My basket' }" th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}"></a>
+        <a class="dropdown-item" th:href="${ '/myOrders' }" th:text="${ 'Order history' }" th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}"></a>
+        <a class="dropdown-item" th:href="@{'/logout'}" th:text="${'Log out'}"></a>
+      </div>
+    </div>
+  </div>
+</nav>

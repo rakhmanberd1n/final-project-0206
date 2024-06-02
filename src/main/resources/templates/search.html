@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="layout/main.html" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<div layout:fragment="content">
+    <div class="mt-3" style="display:grid;grid-template-columns: repeat(4,1fr);grid-gap: 10px 5px;grid-auto-flow: row;margin: auto auto;justify-content: center;width: 75%;border: 1px solid black">
+        <div class="col-12" th:each="product : ${products}">
+            <a th:href="${'/product/'+product.id}" style="text-decoration: none">
+                <div class="card h-100" style="color: black; transition: color 0.1ms ease-in-out;"
+                     onmouseover="this.style.color='blue'"
+                     onmouseout="this.style.color='black'">
+                    <img class="card-img-top" th:src="${'/getPicture/'+product.picture}" alt="..." width="70" height="140">
+                    <div class="card-body p-3">
+                        <div class="text-center">
+                            <h3 th:text="${product.name}"></h3>
+                            <p th:text="${product.price+'$'}"></p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+</html>

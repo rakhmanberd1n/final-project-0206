@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="layout/main.html">
+<div layout:fragment="content">
+  <table id="users_table" th:class="${'table mt-3'}" th:style="${'width : 97%;margin:auto auto'}">
+    <thead class="thead-dark">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">USER</th>
+      <th scope="col">PRODUCTS</th>
+
+      <th scope="col">DATE</th>
+      <th scope="col">PRICE</th>
+      <th scope="col">STATUS</th>
+    </tr>
+    </thead>
+    <tbody id="users_data">
+
+    </tbody>
+  </table>
+  <script type="text/javascript">
+    window.onload = function ()
+    {
+      loadOrders()
+    }
+    function loadOrders()
+    {
+      let html = ""
+      let req = new XMLHttpRequest()
+      req.open('GET', '/orders/all')
+      req.send()
+      req.onload = function ()
+      {
+        let orders = JSON.parse(req.responseText)
+        for(let i = 0;i<orders.length;i++)
+        {
+          let total = 0;
+          html += "<tr>"
+          html += "<td><h4>"+orders[i].id+"</h4></td>"
+          html += "<td><h4>"+orders[i].user.name+"</h4></td>"
+          html += "<td><button class='btn btn-primary' type='button' data-toggle='modal' data-target='#info" + orders[i].id + "'>Products</button>";
+          html += "</td>"
+          html += "<td><h4>"+orders[i].dateTime+"</h4></td>"
+          for(let j = 0;j<orders[i].orderItems.length;j++)
+          {
+            total += orders[i].orderItems[j].product.price*orders[i].orderItems[j].quantity;
+          }
+          html += "<td><h4>"+total+"</h4></td>"
+          html += "<td><h4>"+orders[i].orderStatus+"</h4></td>"
+          html += "<div class='modal fade' id='info" + orders[i].id + "' tabindex='-1' role='dialog' aria-labelledby='deleteModalLabel' aria-hidden='true'>";
+          html += "<div class='modal-dialog modal-dialog-centered' role='document'>";
+          html += "<div class='modal-content'>";
+          html += "<div class='modal-header'>";
+          html += "<h4 class='modal-title' id='deleteModalLabel'>Products in this order</h4>";
+          html += "<button type='button' class='close' data-dismiss='modal' aria-label='Close'>";
+          html += "<span aria-hidden='true'>&times;</span>";
+          html += "</button>";
+          html += "</div>";
+          html += "<div class='modal-body'>";
+          html += "<div>"
+          for(let j = 0;j<orders[i].orderItems.length;j++)
+          {
+            html += "<h3>"+orders[i].orderItems[j].product.name+' '+orders[i].orderItems[j].quantity+' pcs'+"</h3>";
+          }
+          html += "</div>"
+          html += "</div>";
+          html += "<div class='modal-footer'>";
+          html += "<button type='button' class='btn btn-secondary' data-dismiss='modal'>Close</button>";
+          html += "</div>";
+          html += "</div>";
+          html += "</div>";
+          html += "</div>";
+          html += "</tr>"
+        }
+        document.getElementById('users_data').innerHTML = html;
+      }
+    }
+  </script>
+</div>
+</html>

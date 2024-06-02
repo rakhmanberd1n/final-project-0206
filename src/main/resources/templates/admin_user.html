@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="layout/main.html">
+<div layout:fragment="content">
+    <table id="users_table" th:class="${'table mt-3'}" th:style="${'width : 97%;margin:auto auto'}">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">NAME</th>
+            <th scope="col">SURNAME</th>
+            <th scope="col">EMAIL</th>
+            <th scope="col">DELETE</th>
+        </tr>
+        </thead>
+        <tbody id="users_data">
+
+        </tbody>
+    </table>
+    <script type="text/javascript">
+        window.onload = function ()
+        {
+            loadUsers()
+        }
+        function loadUsers()
+        {
+            let html = ""
+            let req = new XMLHttpRequest()
+            req.open('GET', '/users/all')
+            req.send()
+            req.onload = function ()
+            {
+                let users = JSON.parse(req.responseText)
+                for(let i = 0;i<users.length;i++)
+                {
+                    html += "<tr>"
+                    html += "<td><h4>"+users[i].id+"</h4></td>"
+                    html += "<td><h4>"+users[i].name+"</h4></td>"
+                    html += "<td><h4>"+users[i].surname+"</h4></td>"
+                    html += "<td><h4>"+users[i].email+"</h4></td>"
+                    html += "<td><button class='btn btn-danger' type='button' data-toggle='modal' data-target='#deleteModal" + users[i].id + "'>DELETE</button>";
+                    html += "</td>";
+
+                    // Add modal for each user
+                    html += "<div class='modal fade' id='deleteModal" + users[i].id + "' tabindex='-1' role='dialog' aria-labelledby='deleteModalLabel' aria-hidden='true'>";
+                    html += "<div class='modal-dialog modal-dialog-centered' role='document'>";
+                    html += "<div class='modal-content'>";
+                    html += "<div class='modal-header'>";
+                    html += "<h4 class='modal-title' id='deleteModalLabel'>Delete User</h4>";
+                    html += "<button type='button' class='close' data-dismiss='modal' aria-label='Close'>";
+                    html += "<span aria-hidden='true'>&times;</span>";
+                    html += "</button>";
+                    html += "</div>";
+                    html += "<div class='modal-body'>";
+                    html += "<h4>Are you sure you want to delete user " + users[i].name +" "+users[i].surname+"?</h4>";
+                    html += "</div>";
+                    html += "<div class='modal-footer'>";
+                    html += "<button type='button' class='btn btn-secondary' data-dismiss='modal'>Close</button>";
+                    html += "<button type='submit' class='btn btn-danger' onclick='deleteUser(" + users[i].id + ")'>Delete</button>";
+                    html += "</div>";
+                    html += "</div>";
+                    html += "</div>";
+                    html += "</div>";
+                    html += "</tr>"
+                }
+                document.getElementById('users_data').innerHTML = html;
+            }
+        }
+        function deleteUser(id)
+        {
+            $('#deleteModal'+id).modal('hide');
+            $('.modal-backdrop').remove();
+            let req = new XMLHttpRequest()
+            req.open('DELETE','/users/delete')
+            req.setRequestHeader("Content-type", "application/json")
+            req.send(JSON.stringify(id));
+            req.onload = function ()
+            {
+                loadUsers()
+            }
+
+        }
+    </script>
+</div>
+</html>

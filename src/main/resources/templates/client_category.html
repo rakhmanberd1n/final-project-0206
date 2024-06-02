@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="layout/main.html">
+<div layout:fragment="content">
+    <div class="mt-3" style="display:grid;grid-template-columns: repeat(3,1fr);grid-gap: 30px 10px;grid-auto-flow: row;margin: auto auto;width: 80%;justify-items: center;border: 1px solid black">
+        <div class="card mb-3" style="width: 22rem;text-align: center;height:20rem" th:each="category : ${categories}">
+            <a th:href="${'/category/'+category.id}" style="text-decoration: none; color: black">
+                <div class="card-header" style="font-size: 25px"><h3 th:text="${category.name}"></h3></div>
+                <div class="card-body" style="text-align: center">
+                    <img th:src="${'/getPicture/'+category.picture}" width="200" height="200">
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+</html>

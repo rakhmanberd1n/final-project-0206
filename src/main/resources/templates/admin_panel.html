@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="layout/main.html">
+<div layout:fragment="content">
+    <h1 th:style="${'text-align:center'}" th:text="${'Admin Panel is here, welcome'}"></h1>
+    <div class="card" style="width: 20rem;">
+        <div class="card-header" style="font-size: 40px">
+            List of entities:
+        </div>
+        <ul class="list-group list-group-flush" style="font-size: 30px">
+            <li class="list-group-item"><a th:href="${'/admin/category'}" th:text="${'Manage Categories'}"></a></li>
+            <li class="list-group-item"><a th:href="${'/admin/product'}" th:text="${'Manage Products'}"></a></li>
+            <li class="list-group-item"><a th:href="${'/admin/feature'}" th:text="${'Manage Features'}"></a></li>
+            <li class="list-group-item"><a th:href="${'/admin/users'}" th:text="${'Manage Users'}"></a></li>
+            <li class="list-group-item"><a th:href="${'/admin/comments'}" th:text="${'Manage Comments'}"></a></li>
+            <li class="list-group-item"><a th:href="${'/admin/orders'}" th:text="${'Manage Orders'}"></a></li>
+        </ul>
+    </div>
+
+
+</div>
+</html>
